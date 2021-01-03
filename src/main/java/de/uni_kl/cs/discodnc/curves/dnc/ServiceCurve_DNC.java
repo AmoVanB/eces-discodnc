@@ -32,6 +32,7 @@ package de.uni_kl.cs.discodnc.curves.dnc;
 import de.uni_kl.cs.discodnc.curves.CurvePwAffine;
 import de.uni_kl.cs.discodnc.curves.ServiceCurve;
 import de.uni_kl.cs.discodnc.nc.CalculatorConfig;
+import de.uni_kl.cs.discodnc.numbers.Num;
 
 public class ServiceCurve_DNC extends Curve_DNC implements ServiceCurve {
     // --------------------------------------------------------------------------------------------------------------
@@ -55,7 +56,7 @@ public class ServiceCurve_DNC extends Curve_DNC implements ServiceCurve {
     }
 
     public ServiceCurve_DNC(String service_curve_str) throws Exception {
-    	// Smallest possible string: {(0,0),0}
+        // Smallest possible string: {(0,0),0}
         if (service_curve_str == null || service_curve_str.isEmpty() || service_curve_str.length() < 9) {
             throw new RuntimeException("Invalid string representation of a service curve.");
         }
@@ -76,6 +77,22 @@ public class ServiceCurve_DNC extends Curve_DNC implements ServiceCurve {
         ServiceCurve_DNC sc_copy = new ServiceCurve_DNC();
         sc_copy.copy(this);
         return sc_copy;
+    }
+
+    public void makeRateLatency() {
+        if(this.segments.length == 2
+                && this.segments[0].x.eq(0)
+                && this.segments[0].y.eq(0)
+                && this.segments[0].grad.eq(0)
+                && this.segments[1].y.eq(0)
+                && this.segments[1].x.geq(Num.getFactory().create(0))
+                && this.segments[1].grad.geq(Num.getFactory().create(0))) {
+            // Ok it is a rate-latency curve!
+            makeRateLatency(this, this.segments[1].grad, this.segments[1].x);
+        }
+        else {
+            throw new RuntimeException("This curve in not a rate latency curve!");
+        }
     }
 
     @Override

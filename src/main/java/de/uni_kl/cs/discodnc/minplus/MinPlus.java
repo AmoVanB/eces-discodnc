@@ -32,16 +32,12 @@ package de.uni_kl.cs.discodnc.minplus;
 //import ch.ethz.rtc.kernel.Curve;
 //import Curve;
 
-import ch.ethz.rtc.kernel.CurveMath;
-import ch.ethz.rtc.kernel.Segment;
-import ch.ethz.rtc.kernel.SegmentList;
 
 import de.uni_kl.cs.discodnc.curves.ArrivalCurve;
 import de.uni_kl.cs.discodnc.curves.Curve;
 import de.uni_kl.cs.discodnc.curves.CurvePwAffine;
 import de.uni_kl.cs.discodnc.curves.MaxServiceCurve;
 import de.uni_kl.cs.discodnc.curves.ServiceCurve;
-import de.uni_kl.cs.discodnc.curves.mpa_rtc_pwaffine.Curve_MPARTC_PwAffine;
 import de.uni_kl.cs.discodnc.minplus.dnc.Convolution_DNC;
 import de.uni_kl.cs.discodnc.minplus.dnc.Deconvolution_DNC;
 import de.uni_kl.cs.discodnc.nc.CalculatorConfig;
@@ -74,11 +70,7 @@ public abstract class MinPlus {
 			return Convolution_DNC.convolve(service_curve_1, service_curve_2, tb_rl_optimized);
 
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-			ch.ethz.rtc.kernel.Curve result = CurveMath.minPlusConv(
-					((Curve_MPARTC_PwAffine) service_curve_1).getRtc_curve(),
-					((Curve_MPARTC_PwAffine) service_curve_2).getRtc_curve());
-
-			return CurvePwAffine.getFactory().createServiceCurve(result.toString());
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -107,20 +99,7 @@ public abstract class MinPlus {
 			return Convolution_DNC.convolve_SCs_SCs(service_curves_1, service_curves_2, tb_rl_optimized);
 
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-
-			Set<ServiceCurve> results = new HashSet<ServiceCurve>();
-
-			for (ServiceCurve beta_1 : service_curves_1) {
-				for (ServiceCurve beta_2 : service_curves_2) {
-
-					Curve_MPARTC_PwAffine s11 = (Curve_MPARTC_PwAffine) beta_1;
-					Curve_MPARTC_PwAffine s12 = (Curve_MPARTC_PwAffine) beta_2;
-
-					results.add(CurvePwAffine.getFactory().createServiceCurve(
-							CurveMath.minPlusConv(s11.getRtc_curve(), s12.getRtc_curve()).toString()));
-				}
-			}
-			return results;
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -133,11 +112,7 @@ public abstract class MinPlus {
 			return Convolution_DNC.convolve(arrival_curve_1, arrival_curve_2);
 
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-			ch.ethz.rtc.kernel.Curve result = CurveMath.minPlusConv(
-					((Curve_MPARTC_PwAffine) arrival_curve_1).getRtc_curve(),
-					((Curve_MPARTC_PwAffine) arrival_curve_2).getRtc_curve());
-
-			return CurvePwAffine.getFactory().createArrivalCurve(result.toString());
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -148,28 +123,7 @@ public abstract class MinPlus {
 				|| CalculatorConfig.getInstance().getCurveImpl().equals(CurveImpl.DNC)) {
 			return Convolution_DNC.convolve(arrival_curves);
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-
-			// TODO Double check
-			if (arrival_curves == null || arrival_curves.isEmpty()) {
-				return CurvePwAffine.getFactory().createZeroArrivals();
-			}
-			if (arrival_curves.size() == 1) {
-				return arrival_curves.iterator().next().copy();
-			}
-			Segment s = new Segment(0, 0, 0);
-			SegmentList sl = new SegmentList();
-			sl.add(s);
-			ch.ethz.rtc.kernel.Curve result = new ch.ethz.rtc.kernel.Curve(sl);
-			ch.ethz.rtc.kernel.Curve ac2 = null;
-			for (ArrivalCurve arrival_curve_2 : arrival_curves) {
-				CurvePwAffine result_curves = CurvePwAffine.getFactory().createArrivalCurve(arrival_curve_2.toString());
-				Curve_MPARTC_PwAffine c = (Curve_MPARTC_PwAffine) result_curves;
-				ac2 = c.getRtc_curve();
-
-				result = CurveMath.minPlusConv(result, ac2);
-			}
-
-			return CurvePwAffine.getFactory().createArrivalCurve(ac2.toString());
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -182,11 +136,7 @@ public abstract class MinPlus {
 				|| CalculatorConfig.getInstance().getCurveImpl().equals(CurveImpl.DNC)) {
 			return Convolution_DNC.convolve(max_service_curve_1, max_service_curve_2);
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-			ch.ethz.rtc.kernel.Curve result = CurveMath.minPlusConv(
-					((Curve_MPARTC_PwAffine) max_service_curve_1).getRtc_curve(),
-					((Curve_MPARTC_PwAffine) max_service_curve_2).getRtc_curve());
-
-			return CurvePwAffine.getFactory().createMaxServiceCurve(result.toString());
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -199,17 +149,7 @@ public abstract class MinPlus {
 				|| CalculatorConfig.getInstance().getCurveImpl().equals(CurveImpl.DNC)) {
 			return Convolution_DNC.convolve_ACs_MSC(arrival_curves, maximum_service_curve);
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-
-			Set<CurvePwAffine> results = new HashSet<CurvePwAffine>();
-
-			Curve_MPARTC_PwAffine msc_mpa_rtc = (Curve_MPARTC_PwAffine) maximum_service_curve;
-			for (ArrivalCurve alpha_tmp : arrival_curves) {
-				// Do not mind the semantics "Arrival Curve"
-				results.add(CurvePwAffine.getFactory().createArrivalCurve(CurveMath
-						.minPlusConv(((Curve_MPARTC_PwAffine) alpha_tmp).getRtc_curve(), msc_mpa_rtc.getRtc_curve())
-						.toString()));
-			}
-			return results;
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -221,16 +161,7 @@ public abstract class MinPlus {
 				|| CalculatorConfig.getInstance().getCurveImpl().equals(CurveImpl.DNC)) {
 			return Convolution_DNC.convolve_ACs_EGamma(arrival_curves, extra_gamma_curve);
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-
-			Set<ArrivalCurve> results = new HashSet<ArrivalCurve>();
-
-			Curve_MPARTC_PwAffine egamma_mpa_rtc = (Curve_MPARTC_PwAffine) extra_gamma_curve;
-			for (ArrivalCurve alpha_tmp : arrival_curves) {
-				results.add(CurvePwAffine.getFactory().createArrivalCurve(CurveMath
-						.minPlusConv(((Curve_MPARTC_PwAffine) alpha_tmp).getRtc_curve(), egamma_mpa_rtc.getRtc_curve())
-						.toString()));
-			}
-			return results;
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -250,16 +181,7 @@ public abstract class MinPlus {
 				|| CalculatorConfig.getInstance().getCurveImpl().equals(CurveImpl.DNC)) {
 			return Deconvolution_DNC.deconvolve(arrival_curves, service_curve, tb_rl_optimized);
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-
-			Set<ArrivalCurve> results = new HashSet<ArrivalCurve>();
-
-			Curve_MPARTC_PwAffine beta_mpa_rtc = (Curve_MPARTC_PwAffine) service_curve;
-			for (ArrivalCurve alpha_tmp : arrival_curves) {
-				results.add(CurvePwAffine.getFactory().createArrivalCurve(CurveMath
-						.minPlusDeconv(((Curve_MPARTC_PwAffine) alpha_tmp).getRtc_curve(), beta_mpa_rtc.getRtc_curve())
-						.toString()));
-			}
-			return results;
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -276,17 +198,7 @@ public abstract class MinPlus {
 				|| CalculatorConfig.getInstance().getCurveImpl().equals(CurveImpl.DNC)) {
 			return Deconvolution_DNC.deconvolve(arrival_curves, service_curves, tb_rl_optimized);
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-
-			Set<ArrivalCurve> results = new HashSet<ArrivalCurve>();
-
-			for (ServiceCurve beta_tmp : service_curves) {
-				for (ArrivalCurve alpha_tmp : arrival_curves) {
-					results.add(CurvePwAffine.getFactory().createArrivalCurve(
-							CurveMath.minPlusDeconv(((Curve_MPARTC_PwAffine) alpha_tmp).getRtc_curve(),
-									((Curve_MPARTC_PwAffine) beta_tmp).getRtc_curve()).toString()));
-				}
-			}
-			return results;
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -302,12 +214,7 @@ public abstract class MinPlus {
 				|| CalculatorConfig.getInstance().getCurveImpl().equals(CurveImpl.DNC)) {
 			return Deconvolution_DNC.deconvolve(arrival_curve, service_curve);
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-
-			ch.ethz.rtc.kernel.Curve result = CurveMath.minPlusDeconv(
-					((Curve_MPARTC_PwAffine) arrival_curve).getRtc_curve(),
-					((Curve_MPARTC_PwAffine) service_curve).getRtc_curve());
-
-			return CurvePwAffine.getFactory().createArrivalCurve(result.toString());
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -319,18 +226,7 @@ public abstract class MinPlus {
 				|| CalculatorConfig.getInstance().getCurveImpl().equals(CurveImpl.DNC)) {
 			return Deconvolution_DNC.deconvolve_almostConcCs_SCs(curves, service_curves);
 		} else { // Must be CurveClass.MPA_RTC + OpertionClass.NATIVE
-
-			Set<ArrivalCurve> results = new HashSet<ArrivalCurve>();
-
-			for (ServiceCurve beta_tmp : service_curves) {
-				for (CurvePwAffine c_tmp : curves) {
-					// Do not mind the semantics "Arrival Curve"
-					results.add(CurvePwAffine.getFactory()
-							.createArrivalCurve(CurveMath.minPlusDeconv(((Curve_MPARTC_PwAffine) c_tmp).getRtc_curve(),
-									((Curve_MPARTC_PwAffine) beta_tmp).getRtc_curve()).toString()));
-				}
-			}
-			return results;
+			throw new RuntimeException("We disable the usage of the RTC Toolbox!");
 		}
 	}
 
@@ -389,7 +285,7 @@ public abstract class MinPlus {
 
 	/**
 	 * @param set1
-	 * @param set
+	 * @param set2
 	 * @return 0 == none of the sets is empty, <br/>
 	 *         1 == the first sets is empty, <br/>
 	 *         2 == the second sets is empty, <br/>

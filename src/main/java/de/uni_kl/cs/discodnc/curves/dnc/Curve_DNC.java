@@ -1275,7 +1275,7 @@ public class Curve_DNC implements CurvePwAffine {
 		c_dnc.is_token_bucket = true; // with burstiness 0
 	}
 
-	private void makeRateLatency(Curve_DNC c_dnc, Num rate, Num latency) {
+	protected void makeRateLatency(Curve_DNC c_dnc, Num rate, Num latency) {
 		if (rate.equals(Num.getFactory().getPositiveInfinity())) {
 			makeDelayedInfiniteBurst(c_dnc, latency);
 			return;
@@ -1306,10 +1306,10 @@ public class Curve_DNC implements CurvePwAffine {
 			makeDelayedInfiniteBurst(c_dnc, Num.getFactory().createZero());
 			return;
 		}
-		if (rate.eqZero()) { // burst is finite
-			makeHorizontal(c_dnc, burst);
-			return;
-		}
+		//if (rate.eqZero()) { // burst is finite
+		//	makeHorizontal(c_dnc, burst);
+		//	return;
+		//}
 		if (burst.eqZero()) {
 			makePeakRate(c_dnc, rate);
 			return;

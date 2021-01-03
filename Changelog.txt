@@ -1,3 +1,14 @@
+v2.4.3-lkn (2019-Apr-03)
+------------------------
+
+* Removal of the unused RTC toolbox
+* Usage of the same maven-surefire-plugin version as for our other modules
+* Addition of two token buckets leads to a new token bucket (and not "just" an arrival curve)
+* Addition of a token bucket and a constant leads to a new token bucket (and not "just" an arrival curve)
+* Still consider a token bucket with null rate as a token bucket
+* Enable the conversion of a service curve to a rate-latency curve if it indeed has such a shape
+* Some tab -> spaces here and there
+
 v2.4.3 "Chimera" (2018-Aug-03)
 ------------------------------
 * Fixed Bug #31: Computation of infinite output bound due to stability constraint violation.

@@ -28,7 +28,6 @@
 package de.uni_kl.cs.discodnc.curves;
 
 import de.uni_kl.cs.discodnc.curves.dnc.Curve_DNC;
-import de.uni_kl.cs.discodnc.curves.mpa_rtc_pwaffine.Curve_MPARTC_PwAffine;
 import de.uni_kl.cs.discodnc.nc.CalculatorConfig;
 import de.uni_kl.cs.discodnc.numbers.Num;
 
@@ -46,7 +45,7 @@ public interface CurvePwAffine extends Curve {
     static CurvePwAffine getFactory() {
         switch (CalculatorConfig.getInstance().getCurveImpl()) {
             case MPA_RTC:
-                return Curve_MPARTC_PwAffine.getFactory();
+                throw new RuntimeException("We disable the usage of the RTC Toolbox!");
             case DNC:
             default:
                 return Curve_DNC.getFactory();
@@ -68,6 +67,12 @@ public interface CurvePwAffine extends Curve {
             case ADD:
                 if (curve1.equals(ZERO_DELAY_INFINITE_BURST) || curve2.equals(ZERO_DELAY_INFINITE_BURST)) {
                     return ZERO_DELAY_INFINITE_BURST;
+                }
+                else if(curve1.isTokenBucket() && curve2.isTokenBucket()) {
+                    return CurvePwAffine.getFactory().createTokenBucket(
+                            Num.getFactory().add(curve1.getUltAffineRate(), curve2.getUltAffineRate()),
+                            Num.getFactory().add(curve1.getBurst(), curve2.getBurst())
+                    );
                 }
                 break;
             case SUB:
@@ -390,9 +395,12 @@ public interface CurvePwAffine extends Curve {
      * @return The shifted curve.
      */
     static CurvePwAffine add(CurvePwAffine curve, Num dy) {
+        if(curve.isTokenBucket() && dy.gt(Num.getFactory().create(0)))
+            return CurvePwAffine.getFactory().createTokenBucket(curve.getUltAffineRate(), Num.getFactory().add(curve.getBurst(), dy));
+
         CurvePwAffine curve_copy = curve.copy();
         if(dy.eqZero()) {
-        	return curve_copy;
+            return curve_copy;
         }
         for (int i = 0; i < curve.getSegmentCount(); i++) {
             curve_copy.getSegment(i).setY(Num.getUtils().add(curve_copy.getSegment(i).getY(), dy));
@@ -515,10 +523,10 @@ public interface CurvePwAffine extends Curve {
      * @return The shifted curve.
      */
     static CurvePwAffine shiftRight(CurvePwAffine curve, Num dx) {
-    	if(dx.ltZero()) {
-    		return shiftLeftClipping(curve, dx);
-    	}
-    	
+        if(dx.ltZero()) {
+            return shiftLeftClipping(curve, dx);
+        }
+
         CurvePwAffine curve_copy = curve.copy();
         if (dx.eqZero()) {
             return curve_copy;
@@ -553,15 +561,15 @@ public interface CurvePwAffine extends Curve {
      * @return The shifted curve.
      */
     static CurvePwAffine shiftLeftClipping(CurvePwAffine curve, Num dx) {
-    	if(dx.ltZero()) {
-    		return shiftRight(curve, dx);
-    	}
-        
-    	CurvePwAffine curve_copy = curve.copy();
-    	if(dx.eqZero()) {
-    		return curve_copy;
-    	}
-    	
+        if(dx.ltZero()) {
+            return shiftRight(curve, dx);
+        }
+
+        CurvePwAffine curve_copy = curve.copy();
+        if(dx.eqZero()) {
+            return curve_copy;
+        }
+
         int i = curve.getSegmentDefining(dx);
         LinearSegment segment_i = curve_copy.getSegment(i);
         if (segment_i.getX().lt(dx)) {

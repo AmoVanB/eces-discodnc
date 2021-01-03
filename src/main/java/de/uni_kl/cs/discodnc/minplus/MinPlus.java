@@ -237,9 +237,9 @@ public abstract class MinPlus {
 	/**
 	 * @param obj1
 	 * @param obj2
-	 * @return 0 == none of the objects is null, <br/>
-	 *         1 == the first object is null, <br/>
-	 *         2 == the second object is null, <br/>
+	 * @return 0 == none of the objects is null,
+	 *         1 == the first object is null,
+	 *         2 == the second object is null,
 	 *         3 == both objects are null.
 	 */
 	public static int inputNullCheck(Object obj1, Object obj2) {
@@ -264,9 +264,9 @@ public abstract class MinPlus {
 	/**
 	 * @param curve_1
 	 * @param curve_2
-	 * @return 0 == none of the objects is a delayed infinite burst, <br/>
-	 *         1 == the first object is a delayed infinite burst, <br/>
-	 *         2 == the second object is a delayed infinite burst, <br/>
+	 * @return 0 == none of the objects is a delayed infinite burst,
+	 *         1 == the first object is a delayed infinite burst,
+	 *         2 == the second object is a delayed infinite burst,
 	 *         3 == both objects are a delayed infinite burst.
 	 */
 	public static int inputDelayedInfiniteBurstCheck(Curve curve_1, Curve curve_2) {
@@ -286,9 +286,9 @@ public abstract class MinPlus {
 	/**
 	 * @param set1
 	 * @param set2
-	 * @return 0 == none of the sets is empty, <br/>
-	 *         1 == the first sets is empty, <br/>
-	 *         2 == the second sets is empty, <br/>
+	 * @return 0 == none of the sets is empty,
+	 *         1 == the first sets is empty,
+	 *         2 == the second sets is empty,
 	 *         3 == both sets are empty.
 	 */
 	@SuppressWarnings("rawtypes")

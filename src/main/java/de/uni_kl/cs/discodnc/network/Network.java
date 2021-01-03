@@ -1149,9 +1149,6 @@ public class Network {
 	/**
 	 * @param path
 	 *            The tandem of servers to check for flows.
-	 * @param flows_to_join
-	 *            Flows not in the return set<br>
-	 *            null will be handled as empty set of flows.
 	 * @return The joining flows.
 	 * @throws Exception
 	 *             Could not derive the joining flows even if there are.
